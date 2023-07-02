@@ -2,9 +2,13 @@
 FROM node:18-alpine AS build
 
 WORKDIR /app
+
 COPY package*.json .
+
 RUN npm install
+
 COPY . .
+
 RUN npm run build
 
 # prod stage
@@ -12,15 +16,15 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-COPY package*.json .
-
 ARG NODE_ENV=production
 
 ENV NODE_ENV=${NODE_ENV}
 
-RUN npm install --only=production
-
 COPY --from=build /app/dist ./dist
+
+COPY package*.json .
+
+RUN npm install --only=production
 
 RUN rm package*.json
 
